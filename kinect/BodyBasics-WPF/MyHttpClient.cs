@@ -8,7 +8,7 @@ using System.Net;
 
 namespace Microsoft.Samples.Kinect.BodyBasics
 {
-    class MyHttpClient
+    public class MyHttpClient
     {
         static String baseUrl = "http://127.0.0.1/";
 
@@ -18,7 +18,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         static String play = "play";
         static String pause = "pause/";
 
-        static void startTone(String id)
+        public static void startTone(String id)
         {
             String url = baseUrl + start + id;
 
@@ -28,7 +28,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             }
         }
 
-        static void playTone(String id)
+        public static void playTone(String id)
         {
             String url = baseUrl + play + id;
 
@@ -38,7 +38,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             }
         }
 
-        static void pauseTone(String id)
+        public static void pauseTone(String id)
         {
             String url = baseUrl + pause + id;
 
@@ -48,7 +48,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             }
         }
 
-        static async void changeVolume(String value , String id)
+        public static async void changeVolume(String value , String id)
         {
             String url = baseUrl + volume + id;
             using (var client = new HttpClient())
@@ -62,7 +62,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             }
         }
 
-        static async void changeBeat(String value, String id)
+        public static async void changeBeat(String value, String id)
         {
             String url = baseUrl + beat + id;
             using (var client = new HttpClient())
