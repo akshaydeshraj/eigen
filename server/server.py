@@ -38,14 +38,15 @@ def api_pause_tone(tone_id):
 @app.route('/beat/<tone_id>', methods=['POST'])
 def api_change_beat(tone_id):
     # Change the beats per minute of given id.
-    e.bpms[int(tone_id)] = request.form["value"]
+    e.bpms[int(tone_id)] = int(request.form["value"])
     return
 
 
 @app.route('/volume/<tone_id>', methods=['POST'])
 def api_change_volume(tone_id):
     # Change the volume of given id.
-    a.channels[int(tone_id)].set_volume(request.form["value"])
+    print float(request.form["value"])
+    a.channels[int(tone_id)].set_volume(float(request.form["value"]))
     return
 
 
