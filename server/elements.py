@@ -3,9 +3,8 @@ Audio elements with beats
 """
 
 import time
+from audio import bpms, pause
 
-bpms = [60, 30, 10]
-pause = [0, 0, 0]
 
 def play(channel, song, beat_id):
     """

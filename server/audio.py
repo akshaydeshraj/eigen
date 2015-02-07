@@ -12,10 +12,19 @@ channels = []
 
 # Init songs
 songs = []
-SONGS = ["../sounds/hisnare.wav", "../sounds/mono.wav"]
+SONGS = ["hisnare",
+         "mono",
+         "closehihat",
+         "kick",
+         "scratch"]
+
+bpms = []
+pause = []
 
 for song in SONGS:
-    songs.append(pygame.mixer.Sound(song))
+    songs.append(pygame.mixer.Sound("../sounds/" + song + ".wav"))
+    bpms.append(60)
+    pause.append(0)
 
 # Init channels
 for i in range(N_CHN):
