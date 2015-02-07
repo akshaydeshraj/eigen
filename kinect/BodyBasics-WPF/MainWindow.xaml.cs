@@ -631,6 +631,12 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             }
         }
 
+        // Draws vertical bars for tools
+        private void DrawBars()
+        {
+
+        }
+
         // Draw volume bar on the top edge
         private void DrawVolumeBar(DrawingContext context, float value)
         {

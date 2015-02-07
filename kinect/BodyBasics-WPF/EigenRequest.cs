@@ -12,7 +12,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 {
     public class EigenRequest
     {
-        static String baseUrl = "http://localhost";
+        static String baseUrl = "http://127.0.0.1:5000";
 
         static String volume = "/volume";
         static String start = "/start";
@@ -62,6 +62,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             // Pause music of given id
 
             String uri = baseUrl + pause + "/" + id;
+            get(uri);
         }
 
         public static void playMusic(String id)
@@ -69,6 +70,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             // Play music of given id
 
             String uri = baseUrl + play + "/" + id;
+            get(uri);
         }
 
         public static void changeVolume(String id, String value)
