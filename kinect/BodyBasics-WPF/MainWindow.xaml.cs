@@ -274,12 +274,15 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
         public static void right_part(float angle)
         { 
-            if(angle<=180&&angle>=120)
-                        Console.Out.WriteLine(" section 1" +1);
-                else if(angle<120&&angle>=60)
-                        Console.Out.WriteLine(" section 1" +2);
-            else if (angle<60&&angle>=0)
-                        Console.Out.WriteLine(" section 1" +3);
+
+            if(angle<=180&&angle>=130)
+                Console.Out.WriteLine(" section " + 1 + " angle " + angle);
+                else if(angle<130&&angle>=80)
+                Console.Out.WriteLine(" section " + 2 + " angle " + angle);
+            else if (angle<80&&angle>=30)
+                Console.Out.WriteLine(" section " + 3 + " angle " + angle);
+            
+
         }
 
         public static float AngleBetweenJoints(Body body, JointType centerJoint, JointType topJoint, JointType bottomJoint)
@@ -288,8 +291,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             Vector3 topJointCoord = new Vector3(body.Joints[topJoint].Position.X, body.Joints[topJoint].Position.Y, body.Joints[topJoint].Position.Z);
             Vector3 bottomJointCoord = new Vector3(body.Joints[bottomJoint].Position.X, body.Joints[bottomJoint].Position.Y, body.Joints[bottomJoint].Position.Z);
 
-            Vector3 firstVector = bottomJointCoord - centerJointCoord;
-            Vector3 secondVector = topJointCoord - centerJointCoord;
+            Vector3 firstVector = (bottomJointCoord - centerJointCoord);
+            Vector3 secondVector = (topJointCoord - centerJointCoord);
 
             return AngleBetweenTwoVectors(firstVector, secondVector);
         }
@@ -311,7 +314,15 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         public static float depth_from_chest(Body body, JointType ShoulderRight, JointType HandRight)
         {
 
-            return (body.Joints[ShoulderRight].Position.Z-body.Joints[HandRight].Position.Z)*100;
+            Joint neck = body.Joints[JointType.Neck];
+            Joint spinebase = body.Joints[JointType.SpineBase];
+
+            float length = Math.Abs(neck.Position.Y - spinebase.Position.Y);
+
+           
+                float depth =Math.Abs(body.Joints[ShoulderRight].Position.Z - body.Joints[HandRight].Position.Z) * 100;
+                depth = depth / length;
+                return depth;
         }
 
         //code for jump from right leg
@@ -399,16 +410,32 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                         Pen drawPen = this.bodyColors[penIndex++];
                             
                         if (body.IsTracked)
+                        
                         {
+              //=================================================================================================================//
                             //angle between three point
                    //     float angle=   AngleBetweenJoints(body, JointType.ElbowRight, JointType.HandRight, JointType.ShoulderRight);
 
+              //============================================================================================//
                             //select section from right side
-                    float right_section = AngleBetweenJoints(body, JointType.ShoulderRight, JointType.ElbowRight, JointType.HipRight);
-                    right_part(right_section);
 
-                            //find distance from z axis
-                       float depth_z = depth_from_chest(body,JointType.ShoulderRight,JointType.HandRight); 
+                            Boolean select = false;
+                            Joint head = body.Joints[JointType.Head];
+                            Joint Wristleft = body.Joints[JointType.WristLeft];
+
+                            float right_section = AngleBetweenJoints(body,  JointType.ShoulderRight, JointType.ElbowRight, JointType.HipRight);
+
+                            if (head.Position.Y < Wristleft.Position.Y) { select = true; }
+
+                            if (select) { right_part(right_section); select = false; }
+
+               //=======================================================================================//
+                    //find distance from z axis
+                    if (body.HandLeftState == HandState.Closed)
+                    {
+                        float depth_z = depth_from_chest(body, JointType.ShoulderRight, JointType.HandRight);
+                        Console.Out.WriteLine("depth_z" + depth_z);
+                    }
 
                             // detect jump
                        Boolean jump= jump_right_leg(body,JointType.FootRight,JointType.FootLeft);
@@ -416,7 +443,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                        if (jump)
                        {
                            Console.Out.WriteLine("jump");
-                           EigenRequest.startLoop("0");   
+                          // EigenRequest.startLoop("0");   
                        }
 
                             //play rip 
@@ -424,7 +451,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                        // Console.Out.WriteLine(angle);
                        // Console.Out.WriteLine(right_section);
-                            Console.Out.WriteLine("depth_z" + depth_z);
+                           
 
                             this.DrawClippedEdges(body, dc);
 
