@@ -279,7 +279,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             if(angle<=180&&angle>=130&&right_select!=0)
             {
                 Console.Out.WriteLine(" section " + 1 + " angle " + angle);
-                EigenRequest.playMusic("0");
+                EigenRequest.startLoop("0");
                 right_select = 0;
             }
             else if (angle < 130 && angle >= 80&&right_select!=1)
@@ -360,6 +360,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             if (body.Joints[ElbowLeft].Position.Y < body.Joints[WristLeft].Position.Y) {
                 float valuerip = (body.Joints[WristRight].Position.Z) / Math.Abs(body.Joints[WristLeft].Position.Y - body.Joints[ElbowLeft].Position.Y);
                 Console.Out.WriteLine("rip "+valuerip);
+                EigenRequest.playMusic("3");
             }
         }
 
