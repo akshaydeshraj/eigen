@@ -13,7 +13,8 @@ import audio as a
 def api_root():
     return "I am working."
 
-@app.start("/start/<tone_id>")
+
+@app.route("/start/<tone_id>")
 def api_start_loops(tone_id):
     tone_id = int(tone_id)
     start_new_thread(e.play, (a.channels[tone_id], a.songs[tone_id], tone_id))
