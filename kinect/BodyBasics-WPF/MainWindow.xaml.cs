@@ -307,10 +307,28 @@ namespace Microsoft.Samples.Kinect.BodyBasics
            
         }
 
+        
         public static float depth_from_chest(Body body, JointType ShoulderRight, JointType HandRight)
         {
 
             return (body.Joints[ShoulderRight].Position.Z-body.Joints[HandRight].Position.Z)*100;
+        }
+
+        //code for jump from right leg
+        public static Boolean up = false,down=false;
+
+        public static Boolean jump_right_leg(Body body, JointType FootRight ,JointType FootLeft)
+        {
+            float rightleg = -1*body.Joints[FootRight].Position.Y;
+            float leftleg = -1 * body.Joints[FootLeft].Position.Y;
+         //   Console.Out.WriteLine("r= " + rightleg * 100 + " l= " + leftleg * 100 + " diff " + (leftleg - rightleg )*100);
+
+            if ((Math.Abs( leftleg - rightleg)*100 )> 20 && up == false ) { 
+                up = true; Console.Out.WriteLine("up"); return false; }
+            
+            else if (up == true && (Math.Abs(leftleg - rightleg) * 100) < 10) { up = false;  return true; }
+
+            else  return false;
         }
 
         /// <summary>
@@ -375,16 +393,20 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                         if (body.IsTracked)
                         {
 
-                        float angle=   AngleBetweenJoints(body, JointType.ElbowRight, JointType.HandRight, JointType.ShoulderRight);
-                        float right_section = AngleBetweenJoints(body, JointType.ShoulderRight, JointType.ElbowRight, JointType.HipRight);
-                        right_part(right_section);
+                   //     float angle=   AngleBetweenJoints(body, JointType.ElbowRight, JointType.HandRight, JointType.ShoulderRight);
+                   //     float right_section = AngleBetweenJoints(body, JointType.ShoulderRight, JointType.ElbowRight, JointType.HipRight);
+                 //       right_part(right_section);
 
-                        float depth_z = depth_from_chest(body,JointType.ShoulderRight,JointType.HandRight); 
+                     //   float depth_z = depth_from_chest(body,JointType.ShoulderRight,JointType.HandRight); 
+
+                       Boolean jump= jump_right_leg(body,JointType.FootRight,JointType.FootLeft);
+                     //  Console.Out.WriteLine(jump);
+                            if(jump)Console.Out.WriteLine("jump");
 
 
                        // Console.Out.WriteLine(angle);
                        // Console.Out.WriteLine(right_section);
-                        Console.Out.WriteLine(depth_z);
+                       // Console.Out.WriteLine(depth_z);
 
                             this.DrawClippedEdges(body, dc);
 
