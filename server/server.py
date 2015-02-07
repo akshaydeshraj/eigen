@@ -1,4 +1,4 @@
-from flask import Flask, url_for
+from flask import Flask, url_for , request
 app = Flask(__name__)
 
 @app.route('/')
@@ -27,5 +27,13 @@ def api_stop_tone(tone_id):
 	# Stop the tone 
 	return 'Stopped Playing ' + tone_id	
 
+@app.route('/beat/<tone_id>' , methods=['POST'])
+def api_change_beat(tone_id):
+	return 'Changed beat of ' + tone_id + ' to ' + request.form['value']
+
+@app.route('/volume/<tone_id>' , methods=['POST'])
+def api_change_volume(tone_id):
+	return 'Changed Volume of ' + tone_id + ' to ' + request.form['value']
+		
 if __name__ == '__main__':
     app.run(debug=True)
