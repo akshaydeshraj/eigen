@@ -16,19 +16,21 @@ SONGS = ["hisnare",
          "mono",
          "closehihat",
          "kick",
-         "scratch"]
+         "scratch",
+         "distortedkick23",
+         "bassdrum71"]
 
 bpms = []
 pause = []
 
 for song in SONGS:
     songs.append(pygame.mixer.Sound("../sounds/" + song + ".wav"))
-    bpms.append(60)
+    bpms.append(30)
     pause.append(0)
 
 # Init channels
 for i in range(N_CHN):
-    channels.append(pygame.mixer.Channel(0))
+    channels.append(pygame.mixer.Channel(i))
 
 
 def pause_channel(channel_id):
