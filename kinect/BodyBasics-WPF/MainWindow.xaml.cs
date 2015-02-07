@@ -271,24 +271,28 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             }
         }
 
+       public static int right_select = -1;
 
         public static void right_part(float angle)
         { 
 
-            if(angle<=180&&angle>=130)
+            if(angle<=180&&angle>=130&&right_select!=0)
             {
                 Console.Out.WriteLine(" section " + 1 + " angle " + angle);
                 EigenRequest.playMusic("0");
+                right_select = 0;
             }
-            else if (angle < 130 && angle >= 80)
+            else if (angle < 130 && angle >= 80&&right_select!=1)
             {
                 Console.Out.WriteLine(" section " + 2 + " angle " + angle);
                 EigenRequest.playMusic("1");
+                right_select = 1;
             }
-            else if (angle < 80 && angle >= 30)
+            else if (angle < 80 && angle >= 30&&right_select!=2)
             {
                 Console.Out.WriteLine(" section " + 3 + " angle " + angle);
                 EigenRequest.playMusic("2");
+                right_select = 2;
             }
             
 
