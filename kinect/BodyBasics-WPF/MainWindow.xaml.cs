@@ -331,6 +331,14 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             else  return false;
         }
 
+        public static void rip(Body body, JointType ElbowLeft, JointType WristLeft, JointType WristRight)
+        {
+            if (body.Joints[ElbowLeft].Position.Y < body.Joints[WristLeft].Position.Y) {
+                float valuerip = (body.Joints[WristRight].Position.Z) / Math.Abs(body.Joints[WristLeft].Position.Y - body.Joints[ElbowLeft].Position.Y);
+                Console.Out.WriteLine(valuerip);
+            }
+        }
+
         /// <summary>
         /// Execute shutdown tasks
         /// </summary>
@@ -389,20 +397,26 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                     foreach (Body body in this.bodies)
                     {
                         Pen drawPen = this.bodyColors[penIndex++];
-
+                            
                         if (body.IsTracked)
                         {
-
+                            //angle between three point
                    //     float angle=   AngleBetweenJoints(body, JointType.ElbowRight, JointType.HandRight, JointType.ShoulderRight);
+
+                            //select section from right side
                    //     float right_section = AngleBetweenJoints(body, JointType.ShoulderRight, JointType.ElbowRight, JointType.HipRight);
                  //       right_part(right_section);
 
+                            //find distance from z axis
                      //   float depth_z = depth_from_chest(body,JointType.ShoulderRight,JointType.HandRight); 
 
+                            // detect jump
                        Boolean jump= jump_right_leg(body,JointType.FootRight,JointType.FootLeft);
                      //  Console.Out.WriteLine(jump);
                             if(jump)Console.Out.WriteLine("jump");
 
+                            //play rip 
+                            rip(body,JointType.ElbowLeft,JointType.WristLeft,JointType.WristRight);
 
                        // Console.Out.WriteLine(angle);
                        // Console.Out.WriteLine(right_section);
