@@ -622,6 +622,31 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             }
         }
 
+        // Draw volume bar on the top edge
+        private void DrawVolumeBar(DrawingContext context, float value)
+        {
+            double rectWidth = value * this.displayWidth;
+            double rectHeight = ClipBoundsThickness * 2;
+            double startX = (this.displayWidth - rectWidth) / 2;
+            context.DrawRectangle(
+                    Brushes.DeepSkyBlue,
+                    null,
+                    new Rect(startX, 0, rectWidth, rectHeight));
+        }
+
+        // Draw tempo bar on the bottom edge
+        private void DrawTempoBar(DrawingContext context, float value)
+        {
+            double rectWidth = value * this.displayWidth;
+            double rectHeight = ClipBoundsThickness * 2;
+            double startX = (this.displayWidth - rectWidth) / 2;
+            double startY = this.displayHeight - rectHeight;
+            context.DrawRectangle(
+                    Brushes.ForestGreen,
+                    null,
+                    new Rect(startX, startY, rectWidth, rectHeight));
+        }
+
         /// <summary>
         /// Handles the event which the sensor becomes unavailable (E.g. paused, closed, unplugged).
         /// </summary>
