@@ -13,7 +13,6 @@ channels = []
 # Init songs
 songs = []
 SONGS = ["hisnare",
-         "mono",
          "closehihat",
          "kick",
          "scratch",
@@ -44,7 +43,7 @@ def play_channel(channel_id):
     """Play channel
     """
 
-    channels[channel_id].play()
+    channels[channel_id].play(songs[channel_id])
 
     
 def change_vol(channel_id, vol):
