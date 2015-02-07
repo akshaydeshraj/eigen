@@ -18,7 +18,7 @@ def api_root():
 def api_start_loops(tone_id):
     tone_id = int(tone_id)
     start_new_thread(e.play, (a.channels[tone_id], a.songs[tone_id], tone_id))
-    return
+    return 'started playing'
 
 
 @app.route('/play/<tone_id>')
