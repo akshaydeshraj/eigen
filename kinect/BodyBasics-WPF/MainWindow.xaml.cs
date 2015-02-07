@@ -413,7 +413,12 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                             // detect jump
                        Boolean jump= jump_right_leg(body,JointType.FootRight,JointType.FootLeft);
                      //  Console.Out.WriteLine(jump);
-                            if(jump)Console.Out.WriteLine("jump");
+                       if (jump)
+                       {
+                           Console.Out.WriteLine("jump");
+                           // MyHttpClient.changeVolume("0", "0.2");
+                           MyHttpClient.testget("http://localhost:5000/start/0");   
+                       }
 
                             //play rip 
                             rip(body,JointType.ElbowLeft,JointType.WristLeft,JointType.WristRight);
