@@ -179,7 +179,6 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             this.bones.Add(new Tuple<JointType, JointType>(JointType.HipRight, JointType.KneeRight));
             this.bones.Add(new Tuple<JointType, JointType>(JointType.KneeRight, JointType.AnkleRight));
             this.bones.Add(new Tuple<JointType, JointType>(JointType.AnkleRight, JointType.FootRight));
-
             // Left Leg
             this.bones.Add(new Tuple<JointType, JointType>(JointType.HipLeft, JointType.KneeLeft));
             this.bones.Add(new Tuple<JointType, JointType>(JointType.KneeLeft, JointType.AnkleLeft));
@@ -272,6 +271,32 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             }
         }
 
+
+        public static float AngleBetweenJoints(Body body, JointType centerJoint, JointType topJoint, JointType bottomJoint)
+        {
+            Vector3 centerJointCoord = new Vector3(body.Joints[centerJoint].Position.X, body.Joints[centerJoint].Position.Y, body.Joints[centerJoint].Position.Z);
+            Vector3 topJointCoord = new Vector3(body.Joints[topJoint].Position.X, body.Joints[topJoint].Position.Y, body.Joints[topJoint].Position.Z);
+            Vector3 bottomJointCoord = new Vector3(body.Joints[bottomJoint].Position.X, body.Joints[bottomJoint].Position.Y, body.Joints[bottomJoint].Position.Z);
+
+            Vector3 firstVector = bottomJointCoord - centerJointCoord;
+            Vector3 secondVector = topJointCoord - centerJointCoord;
+
+            return AngleBetweenTwoVectors(firstVector, secondVector);
+        }
+
+        public static float AngleBetweenTwoVectors(Vector3 vectorA, Vector3 vectorB)
+        {
+            vectorA.Normalize();
+            vectorB.Normalize();
+
+            float dotProduct = 0.0f;
+
+            dotProduct = Vector3.Dot(vectorA, vectorB);
+
+            return (float)Math.Round((Math.Acos(dotProduct) * 180 / Math.PI), 2);
+           
+        }
+
         /// <summary>
         /// Execute shutdown tasks
         /// </summary>
@@ -333,6 +358,11 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                         if (body.IsTracked)
                         {
+
+                        float angle=    AngleBetweenJoints(body, JointType.ElbowRight, JointType.HandRight, JointType.ShoulderRight);
+
+                        Console.Out.WriteLine(angle);
+
                             this.DrawClippedEdges(body, dc);
 
                             IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
