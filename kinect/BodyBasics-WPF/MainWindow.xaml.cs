@@ -275,11 +275,11 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         public static void right_part(float angle)
         { 
             if(angle<=180&&angle>=120)
-                        Console.Out.WriteLine(1);
+                        Console.Out.WriteLine(" section 1" +1);
                 else if(angle<120&&angle>=60)
-                        Console.Out.WriteLine(2);
+                        Console.Out.WriteLine(" section 1" +2);
             else if (angle<60&&angle>=0)
-                        Console.Out.WriteLine(3);
+                        Console.Out.WriteLine(" section 1" +3);
         }
 
         public static float AngleBetweenJoints(Body body, JointType centerJoint, JointType topJoint, JointType bottomJoint)
@@ -335,7 +335,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         {
             if (body.Joints[ElbowLeft].Position.Y < body.Joints[WristLeft].Position.Y) {
                 float valuerip = (body.Joints[WristRight].Position.Z) / Math.Abs(body.Joints[WristLeft].Position.Y - body.Joints[ElbowLeft].Position.Y);
-                Console.Out.WriteLine(valuerip);
+                Console.Out.WriteLine("rip "+valuerip);
             }
         }
 
@@ -404,11 +404,11 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                    //     float angle=   AngleBetweenJoints(body, JointType.ElbowRight, JointType.HandRight, JointType.ShoulderRight);
 
                             //select section from right side
-                   //     float right_section = AngleBetweenJoints(body, JointType.ShoulderRight, JointType.ElbowRight, JointType.HipRight);
-                 //       right_part(right_section);
+                    float right_section = AngleBetweenJoints(body, JointType.ShoulderRight, JointType.ElbowRight, JointType.HipRight);
+                    right_part(right_section);
 
                             //find distance from z axis
-                     //   float depth_z = depth_from_chest(body,JointType.ShoulderRight,JointType.HandRight); 
+                       float depth_z = depth_from_chest(body,JointType.ShoulderRight,JointType.HandRight); 
 
                             // detect jump
                        Boolean jump= jump_right_leg(body,JointType.FootRight,JointType.FootLeft);
@@ -425,7 +425,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                        // Console.Out.WriteLine(angle);
                        // Console.Out.WriteLine(right_section);
-                       // Console.Out.WriteLine(depth_z);
+                            Console.Out.WriteLine("depth_z" + depth_z);
 
                             this.DrawClippedEdges(body, dc);
 
