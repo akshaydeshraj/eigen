@@ -49,7 +49,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         private readonly Brush handClosedBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0));
 
         /// Custom brushes
-        private readonly Brush backgroundBrush = new SolidColorBrush(Color.FromArgb(37, 35, 36, 0));
+        private readonly Brush backgroundBrush = new SolidColorBrush(Color.FromArgb(255, 37, 35, 36));
+        private readonly Brush themeBrush = new SolidColorBrush(Color.FromArgb(255, 47, 193, 47));
 
         /// <summary>
         /// Brush used for drawing hands that are currently tracked as opened
@@ -525,6 +526,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                             this.DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
                             this.DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
+                            this.DrawBars(dc, 0.4, 0.4);
                         }
                     }
 
@@ -670,34 +672,58 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         }
 
         // Draws vertical bars for tools
-        private void DrawBars()
+        private void DrawBars(DrawingContext context, double beatValue, double volumeValue)
         {
-
+            DrawBeatBar(context, beatValue);
+            DrawVolumeBar(context, volumeValue);
         }
 
         // Draw volume bar on the top edge
-        private void DrawVolumeBar(DrawingContext context, float value)
+        private void DrawVolumeBar(DrawingContext context, double value)
         {
-            double rectWidth = value * this.displayWidth;
-            double rectHeight = ClipBoundsThickness * 2;
-            double startX = (this.displayWidth - rectWidth) / 2;
+            double rectWidth = ClipBoundsThickness;
+            double rectHeight = 0.5 * this.displayHeight;
+            double rectCurrentHeight = value * rectHeight;
+
+            double startX = rectWidth * 3;
+            double startY = rectWidth * 3;
+            double startCurrentY = startY + (rectHeight - rectCurrentHeight);
+
+            context.PushOpacity(0.4);
             context.DrawRectangle(
-                    Brushes.DeepSkyBlue,
-                    null,
-                    new Rect(startX, 0, rectWidth, rectHeight));
+                themeBrush,
+                null,
+                new Rect(startX, startY, rectWidth, rectHeight));
+
+            context.PushOpacity(2.5);
+            context.DrawRectangle(
+                themeBrush,
+                null,
+                new Rect(startX, startCurrentY, rectWidth, rectCurrentHeight));
         }
 
         // Draw tempo bar on the bottom edge
-        private void DrawTempoBar(DrawingContext context, float value)
+        private void DrawBeatBar(DrawingContext context, double value)
         {
-            double rectWidth = value * this.displayWidth;
-            double rectHeight = ClipBoundsThickness * 2;
-            double startX = (this.displayWidth - rectWidth) / 2;
-            double startY = this.displayHeight - rectHeight;
+            double rectWidth = ClipBoundsThickness;
+            double rectHeight = 0.5 * this.displayHeight;
+            double rectCurrentHeight = value * rectHeight;
+
+            double startX = this.displayWidth - (rectWidth * 4);
+            double startY = rectWidth * 3;
+            double startCurrentY = startY + (rectHeight - rectCurrentHeight);
+
+            context.PushOpacity(0.3);
             context.DrawRectangle(
-                    Brushes.ForestGreen,
-                    null,
-                    new Rect(startX, startY, rectWidth, rectHeight));
+                themeBrush,
+                null,
+                new Rect(startX, startY, rectWidth, rectHeight));
+
+            context.PushOpacity(1.0);
+            context.DrawRectangle(
+                themeBrush,
+                null,
+                new Rect(startX, startCurrentY, rectWidth, rectCurrentHeight));
         }
 
         /// <summary>
