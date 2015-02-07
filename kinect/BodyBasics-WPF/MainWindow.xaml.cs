@@ -50,7 +50,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
         /// Custom brushes
         private readonly Brush backgroundBrush = new SolidColorBrush(Color.FromArgb(255, 37, 35, 36));
-        private readonly Brush themeBrush = new SolidColorBrush(Color.FromArgb(255, 47, 193, 47));
+        private readonly Brush themeBrushDark = new SolidColorBrush(Color.FromArgb(255, 47, 193, 47));
+        private readonly Brush themeBrushLight = new SolidColorBrush(Color.FromArgb(76, 47, 193, 47));
 
         /// <summary>
         /// Brush used for drawing hands that are currently tracked as opened
@@ -276,18 +277,18 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             }
         }
 
-       public static int right_select = -1;
+        public static int right_select = -1;
 
         public static void right_part(float angle)
         { 
 
-            if(angle<=180&&angle>=120&&right_select!=0)
+            if(angle<=180&&angle>=140&&right_select!=0)
             {
                 Console.Out.WriteLine(" section " + 1 + " angle " + angle);
-                EigenRequest.startLoop("0");
+                //EigenRequest.startLoop("0");
                 right_select = 0;
             }
-            else if (angle < 120 && angle >= 60&&right_select!=1)
+            else if (angle < 140 && angle >= 60&&right_select!=1)
             {
                 Console.Out.WriteLine(" section " + 2 + " angle " + angle);
                 EigenRequest.playMusic("1");
@@ -444,6 +445,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                 {
                     // Draw a transparent background to set the render size
                     dc.DrawRectangle(backgroundBrush, null, new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
+                    this.DrawMainCircle(dc);
 
                     int penIndex = 0;
                     foreach (Body body in this.bodies)
@@ -491,11 +493,10 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                        if (jump)
                        {
                            Console.Out.WriteLine("jump");
-                           EigenRequest.startLoop("0");   
+                           EigenRequest.playMusic("6");
                        }
 
                             //play rip 
-                      //      rip(body,JointType.ElbowLeft,JointType.WristLeft,JointType.WristRight);
 
                        // Console.Out.WriteLine(angle);
                        // Console.Out.WriteLine(right_section);
@@ -526,7 +527,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                             this.DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
                             this.DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
-                            this.DrawBars(dc, 0.4, 0.4);
+                            this.DrawBars(dc, 0.6, 0.6);
                         }
                     }
 
@@ -678,6 +679,17 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             DrawVolumeBar(context, volumeValue);
         }
 
+        private void DrawMainCircle(DrawingContext context)
+        {
+            double centerX = this.displayHeight / 2.0;
+            double centerY = this.displayWidth / 2.0;
+            double radius = this.displayWidth / 4.0;
+            Point center = new Point(centerX, centerY);
+
+            context.DrawEllipse(themeBrushDark, null, center, radius, radius);
+
+        }
+
         // Draw volume bar on the top edge
         private void DrawVolumeBar(DrawingContext context, double value)
         {
@@ -689,15 +701,13 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             double startY = rectWidth * 3;
             double startCurrentY = startY + (rectHeight - rectCurrentHeight);
 
-            context.PushOpacity(0.4);
             context.DrawRectangle(
-                themeBrush,
+                themeBrushLight,
                 null,
                 new Rect(startX, startY, rectWidth, rectHeight));
 
-            context.PushOpacity(2.5);
             context.DrawRectangle(
-                themeBrush,
+                themeBrushDark,
                 null,
                 new Rect(startX, startCurrentY, rectWidth, rectCurrentHeight));
         }
@@ -713,15 +723,13 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             double startY = rectWidth * 3;
             double startCurrentY = startY + (rectHeight - rectCurrentHeight);
 
-            context.PushOpacity(0.3);
             context.DrawRectangle(
-                themeBrush,
+                themeBrushLight,
                 null,
                 new Rect(startX, startY, rectWidth, rectHeight));
 
-            context.PushOpacity(1.0);
             context.DrawRectangle(
-                themeBrush,
+                themeBrushDark,
                 null,
                 new Rect(startX, startCurrentY, rectWidth, rectCurrentHeight));
         }
