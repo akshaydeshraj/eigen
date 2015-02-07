@@ -13,7 +13,6 @@ channels = []
 # Init songs
 songs = []
 SONGS = ["hisnare",
-         "mono",
          "closehihat",
          "kick",
          "scratch",

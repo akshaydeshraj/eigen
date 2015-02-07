@@ -276,11 +276,20 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         { 
 
             if(angle<=180&&angle>=130)
+            {
                 Console.Out.WriteLine(" section " + 1 + " angle " + angle);
-                else if(angle<130&&angle>=80)
+                EigenRequest.playMusic("0");
+            }
+            else if (angle < 130 && angle >= 80)
+            {
                 Console.Out.WriteLine(" section " + 2 + " angle " + angle);
-            else if (angle<80&&angle>=30)
+                EigenRequest.playMusic("1");
+            }
+            else if (angle < 80 && angle >= 30)
+            {
                 Console.Out.WriteLine(" section " + 3 + " angle " + angle);
+                EigenRequest.playMusic("2");
+            }
             
 
         }
