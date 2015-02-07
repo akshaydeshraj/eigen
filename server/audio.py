@@ -28,12 +28,14 @@ def pause_channel(channel_id):
 
     channels[channel_id].pause()
 
+    
 def play_channel(channel_id):
     """Play channel
     """
 
     channels[channel_id].play()
 
+    
 def change_vol(channel_id, vol):
     """Change volume of channel
     """

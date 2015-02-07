@@ -1,39 +1,52 @@
-from flask import Flask, url_for , request
+"""
+Server for communicating with the sound module
+"""
+
+from flask import Flask, request
 app = Flask(__name__)
+from thread import start_new_thread
+import elements as e
+import audio as a
+
 
 @app.route('/')
 def api_root():
-	return 'Welcome'
+    return "I am working."
 
-# Deprecated
+@app.start("/start/<tone_id>")
+def api_start_loops(tone_id):
+    tone_id = int(tone_id)
+    start_new_thread(e.play, (a.channels[tone_id], a.songs[tone_id], tone_id))
+    return
 
-# @app.route('/toggle')
-# def api_toggle():
-#    # Toggle the state of the player
-#    return 'state changed'    
 
-# @app.route('/volume/<volume_value>')
-# def api_volume(volume_value):
-# 	# Adjusts volume of the player
-# 	return 'Volume is now ' + volume_value
+@app.route('/play/<tone_id>')
+def api_play_tone(tone_id):
+    a.play_channel(int(tone_id))
+    e.pause[int(tone_id)] = 0
+    return
 
-@app.route('/start/<tone_id>')
-def api_start_tone(tone_id):
-	# Start the tone 
-	return 'Started Playing ' + tone_id
 
-@app.route('/stop/<tone_id>')
-def api_stop_tone(tone_id):
-	# Stop the tone 
-	return 'Stopped Playing ' + tone_id	
+@app.route('/pause/<tone_id>')
+def api_pause_tone(tone_id):
+    a.pause_channel(int(tone_id))
+    e.pause[int(tone_id)] = 1
+    return
 
-@app.route('/beat/<tone_id>' , methods=['POST'])
+
+@app.route('/beat/<tone_id>', methods=['POST'])
 def api_change_beat(tone_id):
-	return 'Changed beat of ' + tone_id + ' to ' + request.form['value']
+    # Change the beats per minute of given id.
+    e.bpms[int(tone_id)] = request.form["value"]
+    return
 
-@app.route('/volume/<tone_id>' , methods=['POST'])
+
+@app.route('/volume/<tone_id>', methods=['POST'])
 def api_change_volume(tone_id):
-	return 'Changed Volume of ' + tone_id + ' to ' + request.form['value']
-		
+    # Change the volume of given id.
+    a.channels[int(tone_id)].set_volume(request.form["value"])
+    return
+
+
 if __name__ == '__main__':
     app.run(debug=True)
