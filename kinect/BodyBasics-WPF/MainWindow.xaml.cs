@@ -47,6 +47,9 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         /// </summary>
         private readonly Brush handClosedBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0));
 
+        /// Custom brushes
+        private readonly Brush backgroundBrush = new SolidColorBrush(Color.FromArgb(37, 35, 36, 0));
+
         /// <summary>
         /// Brush used for drawing hands that are currently tracked as opened
         /// </summary>
@@ -416,7 +419,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                 using (DrawingContext dc = this.drawingGroup.Open())
                 {
                     // Draw a transparent background to set the render size
-                    dc.DrawRectangle(Brushes.Black, null, new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
+                    dc.DrawRectangle(backgroundBrush, null, new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
 
                     int penIndex = 0;
                     foreach (Body body in this.bodies)
