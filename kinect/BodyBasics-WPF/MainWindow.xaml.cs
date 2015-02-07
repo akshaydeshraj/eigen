@@ -425,9 +425,13 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                             float right_section = AngleBetweenJoints(body,  JointType.ShoulderRight, JointType.ElbowRight, JointType.HipRight);
 
-                            if (head.Position.Y < Wristleft.Position.Y) { select = true; }
+                            int count = 1;
+                            if (head.Position.Y < Wristleft.Position.Y) {
+                                if(count==1){ select = true; count = 2; }
+                                else if (count == 2) { select = false; count = 1; }
+                             }
 
-                            if (select) { right_part(right_section); select = false; }
+                            if (select && count == 2) { right_part(right_section); }
 
                //=======================================================================================//
                     //find distance from z axis
