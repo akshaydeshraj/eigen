@@ -416,8 +416,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                        if (jump)
                        {
                            Console.Out.WriteLine("jump");
-                           // MyHttpClient.changeVolume("0", "0.2");
-                           MyHttpClient.testget("http://localhost:5000/start/0");   
+                           EigenRequest.startLoop("0");   
                        }
 
                             //play rip 
