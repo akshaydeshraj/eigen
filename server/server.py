@@ -16,4 +16,4 @@ def api_volume(volume_value):
 	return 'Volume is now ' + volume_value
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
