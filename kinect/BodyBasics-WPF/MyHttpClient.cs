@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net;
+using System.IO;
 
 namespace Microsoft.Samples.Kinect.BodyBasics
 {
@@ -18,14 +19,30 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         static String play = "play";
         static String pause = "pause/";
 
+        public static void testget(String url)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            Stream stream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(stream);
+            string data = reader.ReadToEnd();
+
+            reader.Close();
+            stream.Close();
+
+        }
+
         public static void startTone(String id)
         {
             String url = baseUrl + start + id;
 
+            WebRequest request = WebRequest.Create("http://www.contoso.com/");
+
             using (var client = new WebClient())
             {
-                var responseString = client.DownloadString(url);
+             //   var responseString = client.(url);
             }
+                
         }
 
         public static void playTone(String id)

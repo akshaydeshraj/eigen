@@ -401,7 +401,12 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                        Boolean jump= jump_right_leg(body,JointType.FootRight,JointType.FootLeft);
                      //  Console.Out.WriteLine(jump);
-                            if(jump)Console.Out.WriteLine("jump");
+                       if (jump)
+                       {
+                           Console.Out.WriteLine("jump");
+                           // MyHttpClient.changeVolume("0", "0.2");
+                           MyHttpClient.testget("http://localhost:5000/start/0");   
+                       }
 
 
                        // Console.Out.WriteLine(angle);
