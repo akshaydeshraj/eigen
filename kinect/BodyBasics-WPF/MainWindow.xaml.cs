@@ -431,7 +431,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                     // The first time GetAndRefreshBodyData is called, Kinect will allocate each Body in the array.
                     // As long as those body objects are not disposed and not set to null in the array,
-                    // those body objects will be re-used.
+                    // those body objects wi  ll be re-used.
                     bodyFrame.GetAndRefreshBodyData(this.bodies);
                     dataReceived = true;
                 }
@@ -475,11 +475,13 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                //=======================================================================================//
                     //find distance from z axis
-                    if (body.HandLeftState == HandState.Closed)
+                    if (body.Joints[JointType.WristLeft].Position.Y>body.Joints[JointType.ElbowLeft].Position.Y)
                     {
                         float depth_z = depth_from_chest(body, JointType.ShoulderRight, JointType.HandRight);
-                     //   EigenRequest.changeVolume(right_select,)
-                   //     Console.Out.WriteLine("depth_z" + depth_z);
+                        float normalisation_factor=(body.Joints[JointType.WristLeft].Position.Y -body.Joints[JointType.ShoulderLeft].Position.Y);
+                        float val=depth_z/normalisation_factor;
+                        EigenRequest.changeVolume(right_select.ToString(), val.ToString());
+                       Console.Out.WriteLine("depth_z " + depth_z+" normal "+normalisation_factor+" val "+val);
                     }
 
                             // detect jump
@@ -492,7 +494,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                        }
 
                             //play rip 
-                            rip(body,JointType.ElbowLeft,JointType.WristLeft,JointType.WristRight);
+                      //      rip(body,JointType.ElbowLeft,JointType.WristLeft,JointType.WristRight);
 
                        // Console.Out.WriteLine(angle);
                        // Console.Out.WriteLine(right_section);
