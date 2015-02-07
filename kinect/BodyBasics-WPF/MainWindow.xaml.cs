@@ -272,6 +272,16 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         }
 
 
+        public static void right_part(float angle)
+        { 
+            if(angle<=180&&angle>=120)
+                        Console.Out.WriteLine(1);
+                else if(angle<120&&angle>=60)
+                        Console.Out.WriteLine(2);
+            else if (angle<60&&angle>=0)
+                        Console.Out.WriteLine(3);
+        }
+
         public static float AngleBetweenJoints(Body body, JointType centerJoint, JointType topJoint, JointType bottomJoint)
         {
             Vector3 centerJointCoord = new Vector3(body.Joints[centerJoint].Position.X, body.Joints[centerJoint].Position.Y, body.Joints[centerJoint].Position.Z);
@@ -295,6 +305,12 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
             return (float)Math.Round((Math.Acos(dotProduct) * 180 / Math.PI), 2);
            
+        }
+
+        public static float depth_from_chest(Body body, JointType ShoulderRight, JointType HandRight)
+        {
+
+            return (body.Joints[ShoulderRight].Position.Z-body.Joints[HandRight].Position.Z)*100;
         }
 
         /// <summary>
@@ -359,9 +375,16 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                         if (body.IsTracked)
                         {
 
-                        float angle=    AngleBetweenJoints(body, JointType.ElbowRight, JointType.HandRight, JointType.ShoulderRight);
+                        float angle=   AngleBetweenJoints(body, JointType.ElbowRight, JointType.HandRight, JointType.ShoulderRight);
+                        float right_section = AngleBetweenJoints(body, JointType.ShoulderRight, JointType.ElbowRight, JointType.HipRight);
+                        right_part(right_section);
 
-                        Console.Out.WriteLine(angle);
+                        float depth_z = depth_from_chest(body,JointType.ShoulderRight,JointType.HandRight); 
+
+
+                       // Console.Out.WriteLine(angle);
+                       // Console.Out.WriteLine(right_section);
+                        Console.Out.WriteLine(depth_z);
 
                             this.DrawClippedEdges(body, dc);
 
