@@ -350,6 +350,14 @@ namespace Microsoft.Samples.Kinect.BodyBasics
              return depth;
         }
 
+        public static float depth_from_Hand_Y(Body body, JointType HandLeft, JointType HandRight)
+        {
+
+            float depth = Math.Abs(body.Joints[HandLeft].Position.Y - body.Joints[HandRight].Position.Y);
+            // Console.Out.WriteLine("11 " + depth);
+            return depth;
+        }
+
         //code for jump from right leg
         public static Boolean up = false,down=false;
 
@@ -507,18 +515,14 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                             {
 
                                 float depth_hand = depth_from_Hand(body, JointType.HandLeft, JointType.HandRight);
+                                float depth_hand_Y = depth_from_Hand_Y(body, JointType.HandLeft, JointType.HandRight);
 
                                 Console.Out.WriteLine(right_select.ToString());
                                 this.globalVolume = depth_hand;
                                 EigenRequest.changeVolume(right_select.ToString(), depth_hand.ToString());
-                                // Console.Out.WriteLine(" depth hand " + depth_hand);
-                                // float depth_z = depth_from_chest(body, JointType.ShoulderRight, JointType.HandRight);
-                                // float normalisation_factor=100* (body.Joints[JointType.WristLeft].Position.Y -body.Joints[JointType.ShoulderLeft].Position.Y);
-                                // float val=depth_z/normalisation_factor;
-                                // float val2 = depth_z / 20;
-                                // EigenRequest.changeVolume(right_select.ToString(), val2.ToString());
-                                //Console.Out.WriteLine("depth_z " + depth_z+" normal "+normalisation_factor+" val "+val);
-
+                                EigenRequest.changeBPM(right_select.ToString(), Math.Exp
+                                    (System.Convert.ToDouble(depth_hand_Y*360)
+                                    ).ToString());
                             }
 
                             // detect jump
