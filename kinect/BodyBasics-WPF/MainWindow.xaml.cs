@@ -396,9 +396,11 @@ namespace Microsoft.Samples.Kinect.BodyBasics
       public static Stopwatch sw = Stopwatch.StartNew();
         
         public static void rip(Body body, JointType  ElbowLeft, JointType WristLeft, JointType WristRight,JointType ShoulderLeft)
-        {
+      {
+          float angle = AngleBetweenJoints(body, JointType.ElbowRight, JointType.HandRight, JointType.ShoulderRight);
 
-            if ((body.Joints[ElbowLeft].Position.Y < body.Joints[WristLeft].Position.Y) && (body.Joints[ElbowLeft].Position.Y < body.Joints[ShoulderLeft].Position.Y))
+
+            if ((angle<30)&&(body.Joints[ElbowLeft].Position.Y < body.Joints[WristLeft].Position.Y) && (body.Joints[ElbowLeft].Position.Y < body.Joints[ShoulderLeft].Position.Y))
             {
               //  float valuerip = (body.Joints[WristRight].Position.Z) / Math.Abs(body.Joints[WristLeft].Position.Y - body.Joints[ElbowLeft].Position.Y);
               //// Console.Out.WriteLine("rip " + Math.Abs(pre_z - body.Joints[WristRight].Position.Z)*1000);
