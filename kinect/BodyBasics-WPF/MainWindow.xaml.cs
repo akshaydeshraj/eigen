@@ -31,6 +31,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         private Random rgen = new Random();
         double[] rgenArray = new double[23];
 
+        private double globalVolume = 0;
+
         /// <summary>
         /// Thickness of drawn joint lines
         /// </summary>
@@ -224,6 +226,12 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
             // initialize the components (controls) of the window
             this.InitializeComponent();
+
+            // Initialize random array
+
+            for(int i = 0; i < 23; i ++){
+                rgenArray[i] = rgen.NextDouble();
+            }
         }
 
         /// <summary>
@@ -285,22 +293,22 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         public static void right_part(float angle)
         { 
 
-            if(angle<=180&&angle>=140&&right_select!=0)
+            if(angle<=180&&angle>=120&&right_select!=0)
             {
                 Console.Out.WriteLine(" section " + 1 + " angle " + angle);
-            //    EigenRequest.startLoop("0");
+                EigenRequest.startLoop("0");
                 right_select = 0;
             }
-            else if (angle < 140 && angle >= 60&&right_select!=1)
+            else if (angle < 120 && angle >= 60&&right_select!=1)
             {
                 Console.Out.WriteLine(" section " + 2 + " angle " + angle);
-            //    EigenRequest.playMusic("1");
+                EigenRequest.startLoop("1");
                 right_select = 1;
             }
             else if (angle < 60 && angle >= 0&&right_select!=2)
             {
                 Console.Out.WriteLine(" section " + 3 + " angle " + angle);
-            //    EigenRequest.playMusic("2");
+                EigenRequest.startLoop("2");
                 right_select = 2;
             }
             
@@ -337,7 +345,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         {
 
              float depth =Math.Abs(body.Joints[HandLeft].Position.X - body.Joints[HandRight].Position.X);
-             Console.Out.WriteLine("11 " + depth);
+             // Console.Out.WriteLine("11 " + depth);
              return depth;
         }
 
@@ -351,7 +359,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
            //Console.Out.WriteLine("r= " + rightleg * 100 + " l= " + leftleg * 100 + " diff " + (leftleg - rightleg )*100);
 
             if ((( leftleg - rightleg)*100 )> 20 && up == false ) { 
-                up = true; Console.Out.WriteLine("up"); return false; }
+                up = true; //Console.Out.WriteLine("up");
+                return false; }
             
             else if (up == true && ((leftleg - rightleg) * 100) < 10) { up = false;  return true; }
 
@@ -372,6 +381,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
             else return false;
         }
+
 
       public static  float pre_z = 0;
       public static Stopwatch sw = Stopwatch.StartNew();
@@ -395,7 +405,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                 if (sw.ElapsedMilliseconds >= 1500)
                 {
-                   // EigenRequest.playMusic("3");        
+                    EigenRequest.playMusic("3");        
                     sw.Stop();
                     sw.Reset();
                     sw.Start();
@@ -451,7 +461,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                 }
             }
 
-            
+
 
             if (dataReceived)
             {
@@ -465,102 +475,111 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                     foreach (Body body in this.bodies)
                     {
                         Pen drawPen = this.bodyColors[penIndex++];
-                            
-                        if (body.IsTracked)
-                        
-                        {
-              //=================================================================================================================//
-                            //angle between three point
-                   //     float angle=   AngleBetweenJoints(body, JointType.ElbowRight, JointType.HandRight, JointType.ShoulderRight);
 
-              //============================================================================================//
+                        if (body.IsTracked)
+                        {
+                            //=================================================================================================================//
+                            //angle between three point
+                            //     float angle=   AngleBetweenJoints(body, JointType.ElbowRight, JointType.HandRight, JointType.ShoulderRight);
+
+                            //============================================================================================//
                             //select section from right side
 
                             Boolean select = false;
                             Joint head = body.Joints[JointType.Head];
                             Joint Wristleft = body.Joints[JointType.WristLeft];
 
-                            float right_section = AngleBetweenJoints(body,  JointType.ShoulderRight, JointType.ElbowRight, JointType.HipRight);
+                            float right_section = AngleBetweenJoints(body, JointType.ShoulderRight, JointType.ElbowRight, JointType.HipRight);
 
                             int count = 1;
-                            if (head.Position.Y < Wristleft.Position.Y) {
-                                if(count==1){ select = true; count = 2; }
+                            if (head.Position.Y < Wristleft.Position.Y)
+                            {
+                                if (count == 1) { select = true; count = 2; }
                                 else if (count == 2) { select = false; count = 1; }
-                             }
+                            }
 
                             if (select && count == 2) { right_part(right_section); }
 
-               //=======================================================================================//
-                    //find distance from z axis
-                   // if (body.Joints[JointType.WristLeft].Position.Y>body.Joints[JointType.ElbowLeft].Position.Y)
-                    {
-
-                        float depth_hand = depth_from_Hand(body, JointType.HandLeft, JointType.HandRight);
-                        
-                        EigenRequest.changeVolume(right_select.ToString(), depth_hand.ToString());
-                       Console.Out.WriteLine(" depth hand "+depth_hand);
-                       // float depth_z = depth_from_chest(body, JointType.ShoulderRight, JointType.HandRight);
-                       // float normalisation_factor=100* (body.Joints[JointType.WristLeft].Position.Y -body.Joints[JointType.ShoulderLeft].Position.Y);
-                       // float val=depth_z/normalisation_factor;
-                       // float val2 = depth_z / 20;
-                       // EigenRequest.changeVolume(right_select.ToString(), val2.ToString());
-                       //Console.Out.WriteLine("depth_z " + depth_z+" normal "+normalisation_factor+" val "+val);
-
-                    }
-
-                            // detect jump
-                       Boolean jumpright= jump_right_leg(body,JointType.FootRight,JointType.FootLeft);
-                       Boolean jumpleft = jump_left_leg(body, JointType.FootRight, JointType.FootLeft);
-                     //  Console.Out.WriteLine(jump);
-                       if (jumpright)
-                       {
-
-                           Console.Out.WriteLine("jumpright");
-                           //EigenRequest.startLoop("0");   
-
-                           //Console.Out.WriteLine("jump");
-                           //EigenRequest.playMusic("6");
-
-                       }
-                       if (jumpleft) { Console.Out.WriteLine("jumpleft"); }
-                            //play rip 
-
-                       // Console.Out.WriteLine(angle);
-                       // Console.Out.WriteLine(right_section);
-                           
-
-                            this.DrawClippedEdges(body, dc);
-
-                            IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
-
-                            // convert the joint points to depth (display) space
-                            Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
-
-                            foreach (JointType jointType in joints.Keys)
+                            //=======================================================================================//
+                            //find distance from z axis
+                            // if (body.Joints[JointType.WristLeft].Position.Y>body.Joints[JointType.ElbowLeft].Position.Y)
                             {
-                                // sometimes the depth(Z) of an inferred joint may show as negative
-                                // clamp down to 0.1f to prevent coordinatemapper from returning (-Infinity, -Infinity)
-                                CameraSpacePoint position = joints[jointType].Position;
-                                if (position.Z < 0)
-                                {
-                                    position.Z = InferredZPositionClamp;
-                                }
 
-                                DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(position);
-                                jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+                                float depth_hand = depth_from_Hand(body, JointType.HandLeft, JointType.HandRight);
+
+                                Console.Out.WriteLine(right_select.ToString());
+                                this.globalVolume = depth_hand;
+                                EigenRequest.changeVolume(right_select.ToString(), depth_hand.ToString());
+                                // Console.Out.WriteLine(" depth hand " + depth_hand);
+                                // float depth_z = depth_from_chest(body, JointType.ShoulderRight, JointType.HandRight);
+                                // float normalisation_factor=100* (body.Joints[JointType.WristLeft].Position.Y -body.Joints[JointType.ShoulderLeft].Position.Y);
+                                // float val=depth_z/normalisation_factor;
+                                // float val2 = depth_z / 20;
+                                // EigenRequest.changeVolume(right_select.ToString(), val2.ToString());
+                                //Console.Out.WriteLine("depth_z " + depth_z+" normal "+normalisation_factor+" val "+val);
+
                             }
 
-                            this.DrawBody(joints, jointPoints, dc, drawPen);
+                            // detect jump
+                            Boolean jumpright = jump_right_leg(body, JointType.FootRight, JointType.FootLeft);
+                            Boolean jumpleft = jump_left_leg(body, JointType.FootRight, JointType.FootLeft);
+                            //  Console.Out.WriteLine(jump);
+                            if (jumpright)
+                            {
 
-                            this.DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
-                            this.DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
-                            this.DrawBars(dc, 0.6, 0.6);
-                            this.DrawRandombars(dc);
+                                //Console.Out.WriteLine("jumpright");
+                                EigenRequest.playMusic("6");
+
+                                //Console.Out.WriteLine("jump");
+                                //EigenRequest.playMusic("6");
+
+                            }
+                            if (jumpleft)
+                            {
+                                //Console.Out.WriteLine("jumpleft");
+                                EigenRequest.playMusic("5");
+                            }
+                            //play rip 
+                            rip(body, JointType.ElbowLeft, JointType.WristLeft, JointType.WristRight);
+                            {
+
+                                // Console.Out.WriteLine(angle);
+                                // Console.Out.WriteLine(right_section);
+
+
+                                this.DrawClippedEdges(body, dc);
+
+                                IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
+
+                                // convert the joint points to depth (display) space
+                                Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
+
+                                foreach (JointType jointType in joints.Keys)
+                                {
+                                    // sometimes the depth(Z) of an inferred joint may show as negative
+                                    // clamp down to 0.1f to prevent coordinatemapper from returning (-Infinity, -Infinity)
+                                    CameraSpacePoint position = joints[jointType].Position;
+                                    if (position.Z < 0)
+                                    {
+                                        position.Z = InferredZPositionClamp;
+                                    }
+
+                                    DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(position);
+                                    jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+                                }
+
+                                this.DrawBody(joints, jointPoints, dc, drawPen);
+
+                                this.DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
+                                this.DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
+                                this.DrawBars(dc, globalVolume, globalVolume);
+                                this.DrawRandombars(dc);
+                            }
                         }
-                    }
 
-                    // prevent drawing outside of our render area
-                    this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
+                        // prevent drawing outside of our render area
+                        this.drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
+                    }
                 }
             }
         }
@@ -779,7 +798,9 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             for (int i = 0; i < 23; i++)
             {
                 double startX = (i + 1) * originX + i * gap;
-                double height = rgen.NextDouble() * totalHeight;
+                double newRand = ((rgenArray[i] * 0.8) + (rgen.NextDouble() * 0.2));
+                double height = newRand * totalHeight;
+                rgenArray[i] = newRand;
                 double startY = originY + totalHeight - height;
 
                 // Draw four random bars
