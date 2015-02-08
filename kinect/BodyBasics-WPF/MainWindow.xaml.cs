@@ -527,6 +527,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                                 EigenRequest.changeBPM(right_select.ToString(), 
                                     (System.Convert.ToUInt32(depth_hand_Y*360)
                                     ).ToString());
+                                Console.Out.WriteLine((System.Convert.ToUInt32(depth_hand_Y * 360)
+                                    ).ToString());
                             }
 
                             // detect jump
@@ -626,6 +628,11 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                 if (drawBrush != null)
                 {
+                    if ((jointType == JointType.HandTipLeft) || (jointType == JointType.HandTipRight))
+                    {
+                        drawingContext.DrawEllipse(themeBrushDark, null, jointPoints[jointType], 20, 20);
+                        drawingContext.DrawEllipse(backgroundBrush, null, jointPoints[jointType], 15, 15);
+                    }
                     //drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness, JointThickness);
                 }
             }
@@ -659,7 +666,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                 drawPen = drawingPen;
             }
 
-            drawingContext.DrawLine(drawPen, jointPoints[jointType0], jointPoints[jointType1]);
+            // drawingContext.DrawLine(drawPen, jointPoints[jointType0], jointPoints[jointType1]);
         }
 
         /// <summary>
