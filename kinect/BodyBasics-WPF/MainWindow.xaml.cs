@@ -29,6 +29,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         private const double HandSize = 30;
 
         private Random rgen = new Random();
+        double[] rgenArray = new double[23];
 
         /// <summary>
         /// Thickness of drawn joint lines
@@ -692,11 +693,11 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
             double radius = this.displayWidth / 12.0;
             centerX += radius;
-            centerY -= radius;
+            centerY -= 2 * radius;
             Point center = new Point(centerX, centerY);
 
-            context.DrawEllipse(themeBrushDark, null, center, radius * 2, radius * 2);
-            context.DrawEllipse(backgroundBrush, null, center, (radius * 2) - 20, (radius * 2) - 20);
+            context.DrawEllipse(themeBrushLight, null, center, radius * 2, radius * 2);
+            context.DrawEllipse(backgroundBrush, null, center, (radius * 2) - 10, (radius * 2) - 10);
 
         }
 
@@ -747,14 +748,14 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         private void DrawRandombars(DrawingContext context)
         {
             // Draw for left and right side
-            double totalHeight = 0.3 * this.displayHeight;
-            double originX = ClipBoundsThickness * 3;
+            double totalHeight = 0.2 * this.displayHeight;
+            double originX = ClipBoundsThickness * 1;
             double originY = this.displayHeight - totalHeight;
-            double gap = ClipBoundsThickness;
+            double gap = ClipBoundsThickness * 0.1;
 
-            double width = ClipBoundsThickness * 5;
+            double width = ClipBoundsThickness * 0.7;
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 23; i++)
             {
                 double startX = (i + 1) * originX + i * gap;
                 double height = rgen.NextDouble() * totalHeight;
