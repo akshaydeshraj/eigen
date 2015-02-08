@@ -287,6 +287,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             {
                 this.bodyFrameReader.FrameArrived += this.Reader_FrameArrived;
             }
+            EigenRequest.playMusic("9");
+            EigenRequest.changeVolume("9", "0.3"); // Background sound
         }
 
         public static int right_select = -1;
@@ -421,12 +423,11 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                   if (sw.ElapsedMilliseconds >= 1500)
                   {
-                      EigenRequest.playMusic("3");
+                      EigenRequest.playMusic("4"); // RIP
                       
                       sw.Stop();
                       sw.Reset();
                       sw.Start();
-                      Console.Out.WriteLine("yo");
                   }
               }
             }
@@ -562,7 +563,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                             if (jumpleft)
                             {
                                 //Console.Out.WriteLine("jumpleft");
-                                EigenRequest.playMusic("5");
+                                EigenRequest.playMusic("7");
                             }
                             //play rip 
                             rip(body, JointType.ElbowLeft, JointType.WristLeft, JointType.WristRight, JointType.ShoulderLeft);
