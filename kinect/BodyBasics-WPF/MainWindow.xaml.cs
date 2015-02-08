@@ -28,6 +28,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         /// </summary>
         private const double HandSize = 30;
 
+        private Random rgen = new Random();
+
         /// <summary>
         /// Thickness of drawn joint lines
         /// </summary>
@@ -285,7 +287,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             if(angle<=180&&angle>=140&&right_select!=0)
             {
                 Console.Out.WriteLine(" section " + 1 + " angle " + angle);
-                //EigenRequest.startLoop("0");
+                EigenRequest.startLoop("0");
                 right_select = 0;
             }
             else if (angle < 140 && angle >= 60&&right_select!=1)
@@ -439,6 +441,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                 }
             }
 
+            
+
             if (dataReceived)
             {
                 using (DrawingContext dc = this.drawingGroup.Open())
@@ -481,9 +485,10 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                     if (body.Joints[JointType.WristLeft].Position.Y>body.Joints[JointType.ElbowLeft].Position.Y)
                     {
                         float depth_z = depth_from_chest(body, JointType.ShoulderRight, JointType.HandRight);
-                        float normalisation_factor=(body.Joints[JointType.WristLeft].Position.Y -body.Joints[JointType.ShoulderLeft].Position.Y);
+                        float normalisation_factor=100* (body.Joints[JointType.WristLeft].Position.Y -body.Joints[JointType.ShoulderLeft].Position.Y);
                         float val=depth_z/normalisation_factor;
-                        EigenRequest.changeVolume(right_select.ToString(), val.ToString());
+                        float val2 = depth_z / 20;
+                        EigenRequest.changeVolume(right_select.ToString(), val2.ToString());
                        Console.Out.WriteLine("depth_z " + depth_z+" normal "+normalisation_factor+" val "+val);
                     }
 
@@ -528,6 +533,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                             this.DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
                             this.DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
                             this.DrawBars(dc, 0.6, 0.6);
+                            this.DrawRandombars(dc);
                         }
                     }
 
@@ -683,10 +689,14 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         {
             double centerX = this.displayHeight / 2.0;
             double centerY = this.displayWidth / 2.0;
-            double radius = this.displayWidth / 4.0;
+
+            double radius = this.displayWidth / 12.0;
+            centerX += radius;
+            centerY -= radius;
             Point center = new Point(centerX, centerY);
 
-            context.DrawEllipse(themeBrushDark, null, center, radius, radius);
+            context.DrawEllipse(themeBrushDark, null, center, radius * 2, radius * 2);
+            context.DrawEllipse(backgroundBrush, null, center, (radius * 2) - 20, (radius * 2) - 20);
 
         }
 
@@ -733,6 +743,38 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                 null,
                 new Rect(startX, startCurrentY, rectWidth, rectCurrentHeight));
         }
+
+        private void DrawRandombars(DrawingContext context)
+        {
+            // Draw for left and right side
+            double totalHeight = 0.3 * this.displayHeight;
+            double originX = ClipBoundsThickness * 3;
+            double originY = this.displayHeight - totalHeight;
+            double gap = ClipBoundsThickness;
+
+            double width = ClipBoundsThickness * 5;
+
+            for (int i = 0; i < 4; i++)
+            {
+                double startX = (i + 1) * originX + i * gap;
+                double height = rgen.NextDouble() * totalHeight;
+                double startY = originY + totalHeight - height;
+
+                // Draw four random bars
+                context.DrawRectangle(
+                    themeBrushDark,
+                    null,
+                    new Rect(startX, startY, width, height));
+
+                startX = this.displayWidth - startX - width;
+
+                context.DrawRectangle(
+                    themeBrushDark,
+                    null,
+                    new Rect(startX, startY, width, height));
+            }
+        }
+
 
         /// <summary>
         /// Handles the event which the sensor becomes unavailable (E.g. paused, closed, unplugged).
