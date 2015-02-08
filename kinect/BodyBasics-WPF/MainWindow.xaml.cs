@@ -293,24 +293,28 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
         public static void right_part(float angle)
         {
+            rip_ok = 1;
             
             if(angle<=180&&angle>=120&&right_select!=0)
             {
                 Console.Out.WriteLine(" section " + 1 + " angle " + angle);
                 EigenRequest.startLoop("0");
                 right_select = 0;
+                rip_ok = 0;
             }
             else if (angle < 120 && angle >= 60&&right_select!=1)
             {
                 Console.Out.WriteLine(" section " + 2 + " angle " + angle);
                 EigenRequest.startLoop("1");
                 right_select = 1;
+                rip_ok = 0;
             }
             else if (angle < 60 && angle >= 0&&right_select!=2)
             {
                 Console.Out.WriteLine(" section " + 3 + " angle " + angle);
                 EigenRequest.startLoop("2");
                 right_select = 2;
+                rip_ok = 0;
             }
             
 
@@ -394,33 +398,36 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
       public static  float pre_z = 0;
       public static Stopwatch sw = Stopwatch.StartNew();
+      public static int rip_ok=0; 
         
         public static void rip(Body body, JointType  ElbowLeft, JointType WristLeft, JointType WristRight,JointType ShoulderLeft)
       {
-          
-            if ((body.Joints[ElbowLeft].Position.Y < body.Joints[WristLeft].Position.Y) && (body.Joints[ElbowLeft].Position.Y < body.Joints[ShoulderLeft].Position.Y))
-            {
-              //  float valuerip = (body.Joints[WristRight].Position.Z) / Math.Abs(body.Joints[WristLeft].Position.Y - body.Joints[ElbowLeft].Position.Y);
-              //// Console.Out.WriteLine("rip " + Math.Abs(pre_z - body.Joints[WristRight].Position.Z)*1000);
-                
-              //  float normalisation_factor=(body.Joints[JointType.Neck].Position.Y -body.Joints[JointType.SpineMid].Position.Y);
+          if (rip_ok==0) {
+              if ((body.Joints[ElbowLeft].Position.Y < body.Joints[WristLeft].Position.Y) && (body.Joints[ElbowLeft].Position.Y < body.Joints[ShoulderLeft].Position.Y))
+              {
+                  //  float valuerip = (body.Joints[WristRight].Position.Z) / Math.Abs(body.Joints[WristLeft].Position.Y - body.Joints[ElbowLeft].Position.Y);
+                  //// Console.Out.WriteLine("rip " + Math.Abs(pre_z - body.Joints[WristRight].Position.Z)*1000);
 
-              //  Console.Out.WriteLine("rip required" + Math.Abs(pre_z - body.Joints[WristRight].Position.Z)*1000 / normalisation_factor);
+                  //  float normalisation_factor=(body.Joints[JointType.Neck].Position.Y -body.Joints[JointType.SpineMid].Position.Y);
 
-              //  if (Math.Abs(pre_z-body.Joints[WristRight].Position.Z)*1000>8)
-              //  { //EigenRequest.playMusic("3");
-              //      //Console.Out.WriteLine("rip required" + Math.Abs(pre_z - body.Joints[WristRight].Position.Z)/normalisation_factor);
-              //  }
-              //  pre_z = body.Joints[WristRight].Position.Z;
+                  //  Console.Out.WriteLine("rip required" + Math.Abs(pre_z - body.Joints[WristRight].Position.Z)*1000 / normalisation_factor);
 
-                if (sw.ElapsedMilliseconds >= 1500)
-                {
-                    EigenRequest.playMusic("3");        
-                    sw.Stop();
-                    sw.Reset();
-                    sw.Start();
-                    Console.Out.WriteLine("yo");
-                }
+                  //  if (Math.Abs(pre_z-body.Joints[WristRight].Position.Z)*1000>8)
+                  //  { //EigenRequest.playMusic("3");
+                  //      //Console.Out.WriteLine("rip required" + Math.Abs(pre_z - body.Joints[WristRight].Position.Z)/normalisation_factor);
+                  //  }
+                  //  pre_z = body.Joints[WristRight].Position.Z;
+
+                  if (sw.ElapsedMilliseconds >= 1500)
+                  {
+                      EigenRequest.playMusic("3");
+                      
+                      sw.Stop();
+                      sw.Reset();
+                      sw.Start();
+                      Console.Out.WriteLine("yo");
+                  }
+              }
             }
         }
 
