@@ -292,8 +292,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         public static int right_select = -1;
 
         public static void right_part(float angle)
-        { 
-
+        {
+            
             if(angle<=180&&angle>=120&&right_select!=0)
             {
                 Console.Out.WriteLine(" section " + 1 + " angle " + angle);
@@ -397,10 +397,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         
         public static void rip(Body body, JointType  ElbowLeft, JointType WristLeft, JointType WristRight,JointType ShoulderLeft)
       {
-          float angle = AngleBetweenJoints(body, JointType.ElbowRight, JointType.HandRight, JointType.ShoulderRight);
-
-
-            if ((angle<30)&&(body.Joints[ElbowLeft].Position.Y < body.Joints[WristLeft].Position.Y) && (body.Joints[ElbowLeft].Position.Y < body.Joints[ShoulderLeft].Position.Y))
+          
+            if ((body.Joints[ElbowLeft].Position.Y < body.Joints[WristLeft].Position.Y) && (body.Joints[ElbowLeft].Position.Y < body.Joints[ShoulderLeft].Position.Y))
             {
               //  float valuerip = (body.Joints[WristRight].Position.Z) / Math.Abs(body.Joints[WristLeft].Position.Y - body.Joints[ElbowLeft].Position.Y);
               //// Console.Out.WriteLine("rip " + Math.Abs(pre_z - body.Joints[WristRight].Position.Z)*1000);
@@ -510,7 +508,12 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                                 else if (count == 2) { select = false; count = 1; }
                             }
 
-                            if (select && count == 2) { right_part(right_section); }
+                            if (select && count == 2) {
+   if ((body.Joints[JointType.ShoulderLeft].Position.Y < body.Joints[JointType.ElbowLeft].Position.Y) &&
+       (body.Joints[JointType.ElbowLeft].Position.Y < body.Joints[JointType.WristLeft].Position.Y))
+
+                                { right_part(right_section); }
+                            }
 
                             //=======================================================================================//
                             //find distance from z axis
