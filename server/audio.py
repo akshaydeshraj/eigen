@@ -17,14 +17,15 @@ SONGS = ["hisnare",
          "kick",
          "scratch",
          "distortedkick23",
-         "bassdrum71"]
+         "bassdrum71",
+         "cymbal"]
 
 bpms = []
 pause = []
 
 for song in SONGS:
     songs.append(pygame.mixer.Sound("../sounds/" + song + ".wav"))
-    bpms.append(30)
+    bpms.append(90)
     pause.append(0)
 
 # Init channels

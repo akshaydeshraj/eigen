@@ -28,6 +28,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         /// </summary>
         private const double HandSize = 30;
 
+        private Random rgen = new Random();
+
         /// <summary>
         /// Thickness of drawn joint lines
         /// </summary>
@@ -49,7 +51,9 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         private readonly Brush handClosedBrush = new SolidColorBrush(Color.FromArgb(128, 255, 0, 0));
 
         /// Custom brushes
-        private readonly Brush backgroundBrush = new SolidColorBrush(Color.FromArgb(37, 35, 36, 0));
+        private readonly Brush backgroundBrush = new SolidColorBrush(Color.FromArgb(255, 37, 35, 36));
+        private readonly Brush themeBrushDark = new SolidColorBrush(Color.FromArgb(255, 47, 193, 47));
+        private readonly Brush themeBrushLight = new SolidColorBrush(Color.FromArgb(76, 47, 193, 47));
 
         /// <summary>
         /// Brush used for drawing hands that are currently tracked as opened
@@ -275,18 +279,18 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             }
         }
 
-       public static int right_select = -1;
+        public static int right_select = -1;
 
         public static void right_part(float angle)
         { 
 
-            if(angle<=180&&angle>=120&&right_select!=0)
+            if(angle<=180&&angle>=140&&right_select!=0)
             {
                 Console.Out.WriteLine(" section " + 1 + " angle " + angle);
             //    EigenRequest.startLoop("0");
                 right_select = 0;
             }
-            else if (angle < 120 && angle >= 60&&right_select!=1)
+            else if (angle < 140 && angle >= 60&&right_select!=1)
             {
                 Console.Out.WriteLine(" section " + 2 + " angle " + angle);
             //    EigenRequest.playMusic("1");
@@ -446,12 +450,15 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                 }
             }
 
+            
+
             if (dataReceived)
             {
                 using (DrawingContext dc = this.drawingGroup.Open())
                 {
                     // Draw a transparent background to set the render size
                     dc.DrawRectangle(backgroundBrush, null, new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
+                    this.DrawMainCircle(dc);
 
                     int penIndex = 0;
                     foreach (Body body in this.bodies)
@@ -486,10 +493,18 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                     //find distance from z axis
                    // if (body.Joints[JointType.WristLeft].Position.Y>body.Joints[JointType.ElbowLeft].Position.Y)
                     {
+
                         float depth_hand = depth_from_Hand(body, JointType.HandLeft, JointType.HandRight);
                         
                         EigenRequest.changeVolume(right_select.ToString(), depth_hand.ToString());
                        Console.Out.WriteLine(" depth hand "+depth_hand);
+                       // float depth_z = depth_from_chest(body, JointType.ShoulderRight, JointType.HandRight);
+                       // float normalisation_factor=100* (body.Joints[JointType.WristLeft].Position.Y -body.Joints[JointType.ShoulderLeft].Position.Y);
+                       // float val=depth_z/normalisation_factor;
+                       // float val2 = depth_z / 20;
+                       // EigenRequest.changeVolume(right_select.ToString(), val2.ToString());
+                       //Console.Out.WriteLine("depth_z " + depth_z+" normal "+normalisation_factor+" val "+val);
+
                     }
 
                             // detect jump
@@ -498,12 +513,16 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                      //  Console.Out.WriteLine(jump);
                        if (jumpright)
                        {
+
                            Console.Out.WriteLine("jumpright");
                            //EigenRequest.startLoop("0");   
+
+                           //Console.Out.WriteLine("jump");
+                           //EigenRequest.playMusic("6");
+
                        }
                        if (jumpleft) { Console.Out.WriteLine("jumpleft"); }
                             //play rip 
-                      //      rip(body,JointType.ElbowLeft,JointType.WristLeft,JointType.WristRight);
 
                        // Console.Out.WriteLine(angle);
                        // Console.Out.WriteLine(right_section);
@@ -534,6 +553,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                             this.DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
                             this.DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
+                            this.DrawBars(dc, 0.6, 0.6);
+                            this.DrawRandombars(dc);
                         }
                     }
 
@@ -679,35 +700,102 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         }
 
         // Draws vertical bars for tools
-        private void DrawBars()
+        private void DrawBars(DrawingContext context, double beatValue, double volumeValue)
         {
+            DrawBeatBar(context, beatValue);
+            DrawVolumeBar(context, volumeValue);
+        }
+
+        private void DrawMainCircle(DrawingContext context)
+        {
+            double centerX = this.displayHeight / 2.0;
+            double centerY = this.displayWidth / 2.0;
+
+            double radius = this.displayWidth / 12.0;
+            centerX += radius;
+            centerY -= radius;
+            Point center = new Point(centerX, centerY);
+
+            context.DrawEllipse(themeBrushDark, null, center, radius * 2, radius * 2);
+            context.DrawEllipse(backgroundBrush, null, center, (radius * 2) - 20, (radius * 2) - 20);
 
         }
 
         // Draw volume bar on the top edge
-        private void DrawVolumeBar(DrawingContext context, float value)
+        private void DrawVolumeBar(DrawingContext context, double value)
         {
-            double rectWidth = value * this.displayWidth;
-            double rectHeight = ClipBoundsThickness * 2;
-            double startX = (this.displayWidth - rectWidth) / 2;
+            double rectWidth = ClipBoundsThickness;
+            double rectHeight = 0.5 * this.displayHeight;
+            double rectCurrentHeight = value * rectHeight;
+
+            double startX = rectWidth * 3;
+            double startY = rectWidth * 3;
+            double startCurrentY = startY + (rectHeight - rectCurrentHeight);
+
             context.DrawRectangle(
-                    Brushes.DeepSkyBlue,
-                    null,
-                    new Rect(startX, 0, rectWidth, rectHeight));
+                themeBrushLight,
+                null,
+                new Rect(startX, startY, rectWidth, rectHeight));
+
+            context.DrawRectangle(
+                themeBrushDark,
+                null,
+                new Rect(startX, startCurrentY, rectWidth, rectCurrentHeight));
         }
 
         // Draw tempo bar on the bottom edge
-        private void DrawTempoBar(DrawingContext context, float value)
+        private void DrawBeatBar(DrawingContext context, double value)
         {
-            double rectWidth = value * this.displayWidth;
-            double rectHeight = ClipBoundsThickness * 2;
-            double startX = (this.displayWidth - rectWidth) / 2;
-            double startY = this.displayHeight - rectHeight;
+            double rectWidth = ClipBoundsThickness;
+            double rectHeight = 0.5 * this.displayHeight;
+            double rectCurrentHeight = value * rectHeight;
+
+            double startX = this.displayWidth - (rectWidth * 4);
+            double startY = rectWidth * 3;
+            double startCurrentY = startY + (rectHeight - rectCurrentHeight);
+
             context.DrawRectangle(
-                    Brushes.ForestGreen,
-                    null,
-                    new Rect(startX, startY, rectWidth, rectHeight));
+                themeBrushLight,
+                null,
+                new Rect(startX, startY, rectWidth, rectHeight));
+
+            context.DrawRectangle(
+                themeBrushDark,
+                null,
+                new Rect(startX, startCurrentY, rectWidth, rectCurrentHeight));
         }
+
+        private void DrawRandombars(DrawingContext context)
+        {
+            // Draw for left and right side
+            double totalHeight = 0.3 * this.displayHeight;
+            double originX = ClipBoundsThickness * 3;
+            double originY = this.displayHeight - totalHeight;
+            double gap = ClipBoundsThickness;
+
+            double width = ClipBoundsThickness * 5;
+
+            for (int i = 0; i < 4; i++)
+            {
+                double startX = (i + 1) * originX + i * gap;
+                double height = rgen.NextDouble() * totalHeight;
+                double startY = originY + totalHeight - height;
+
+                // Draw four random bars
+                context.DrawRectangle(
+                    themeBrushDark,
+                    null,
+                    new Rect(startX, startY, width, height));
+
+                startX = this.displayWidth - startX - width;
+
+                context.DrawRectangle(
+                    themeBrushDark,
+                    null,
+                    new Rect(startX, startY, width, height));
+            }
+        }
+
 
         /// <summary>
         /// Handles the event which the sensor becomes unavailable (E.g. paused, closed, unplugged).
