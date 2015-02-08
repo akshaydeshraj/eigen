@@ -633,8 +633,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                 {
                     if ((jointType == JointType.HandTipLeft) || (jointType == JointType.HandTipRight))
                     {
-                        drawingContext.DrawEllipse(themeBrushDark, null, jointPoints[jointType], 20, 20);
-                        drawingContext.DrawEllipse(backgroundBrush, null, jointPoints[jointType], 15, 15);
+                        drawingContext.DrawEllipse(Brushes.Orange, null, jointPoints[jointType], 13, 13);
+                        drawingContext.DrawEllipse(backgroundBrush, null, jointPoints[jointType], 9, 9);
                     }
                     //drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness, JointThickness);
                 }
