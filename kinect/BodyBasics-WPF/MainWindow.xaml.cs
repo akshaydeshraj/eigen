@@ -316,7 +316,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                 right_select = 2;
                 rip_ok = 0;
             }
-            
+
+            rip_ok = 0;
 
         }
 
@@ -519,7 +520,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
    if ((body.Joints[JointType.ShoulderLeft].Position.Y < body.Joints[JointType.ElbowLeft].Position.Y) &&
        (body.Joints[JointType.ElbowLeft].Position.Y < body.Joints[JointType.WristLeft].Position.Y))
 
-                                { right_part(right_section); }
+   { right_part(right_section); rip_ok = 0; }
                             }
 
                             //=======================================================================================//
@@ -534,8 +535,11 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                                 this.globalVolume = depth_hand;
                                 this.globalTempo = depth_hand_Y;
                                 EigenRequest.changeVolume(right_select.ToString(), depth_hand.ToString());
+
+                                float bmp = depth_hand_Y * 360;
+                                if (bmp <= 0) bmp = 1;
                                 EigenRequest.changeBPM(right_select.ToString(), 
-                                    (System.Convert.ToUInt32(depth_hand_Y*360)
+                                    (System.Convert.ToUInt32(bmp)
                                     ).ToString());
                             }
 
