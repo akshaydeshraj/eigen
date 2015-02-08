@@ -722,6 +722,14 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         // Draws vertical bars for tools
         private void DrawBars(DrawingContext context, double beatValue, double volumeValue)
         {
+            if (beatValue > 1)
+            {
+                beatValue = 1;
+            }
+            if (volumeValue > 1)
+            {
+                volumeValue = 1;
+            }
             DrawBeatBar(context, beatValue);
             DrawVolumeBar(context, volumeValue);
         }
