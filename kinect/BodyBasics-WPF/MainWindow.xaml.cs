@@ -288,19 +288,19 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             if(angle<=180&&angle>=140&&right_select!=0)
             {
                 Console.Out.WriteLine(" section " + 1 + " angle " + angle);
-                EigenRequest.startLoop("0");
+            //    EigenRequest.startLoop("0");
                 right_select = 0;
             }
             else if (angle < 140 && angle >= 60&&right_select!=1)
             {
                 Console.Out.WriteLine(" section " + 2 + " angle " + angle);
-                EigenRequest.playMusic("1");
+            //    EigenRequest.playMusic("1");
                 right_select = 1;
             }
             else if (angle < 60 && angle >= 0&&right_select!=2)
             {
                 Console.Out.WriteLine(" section " + 3 + " angle " + angle);
-                EigenRequest.playMusic("2");
+            //    EigenRequest.playMusic("2");
                 right_select = 2;
             }
             
@@ -332,19 +332,13 @@ namespace Microsoft.Samples.Kinect.BodyBasics
            
         }
 
-        
-        public static float depth_from_chest(Body body, JointType ShoulderRight, JointType HandRight)
+        public static float max_depth = 0;
+        public static float depth_from_Hand(Body body, JointType HandLeft, JointType HandRight)
         {
 
-            Joint neck = body.Joints[JointType.Neck];
-            Joint spinebase = body.Joints[JointType.SpineBase];
-
-            float length = Math.Abs(neck.Position.Y - spinebase.Position.Y);
-
-           
-                float depth =Math.Abs(body.Joints[ShoulderRight].Position.Z - body.Joints[HandRight].Position.Z) * 100;
-                depth = depth / length;
-                return depth;
+             float depth =Math.Abs(body.Joints[HandLeft].Position.X - body.Joints[HandRight].Position.X);
+             Console.Out.WriteLine("11 " + depth);
+             return depth;
         }
 
         //code for jump from right leg
@@ -354,20 +348,35 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         {
             float rightleg = -1*body.Joints[FootRight].Position.Y;
             float leftleg = -1 * body.Joints[FootLeft].Position.Y;
-         //   Console.Out.WriteLine("r= " + rightleg * 100 + " l= " + leftleg * 100 + " diff " + (leftleg - rightleg )*100);
+           //Console.Out.WriteLine("r= " + rightleg * 100 + " l= " + leftleg * 100 + " diff " + (leftleg - rightleg )*100);
 
-            if ((Math.Abs( leftleg - rightleg)*100 )> 20 && up == false ) { 
+            if ((( leftleg - rightleg)*100 )> 20 && up == false ) { 
                 up = true; Console.Out.WriteLine("up"); return false; }
             
-            else if (up == true && (Math.Abs(leftleg - rightleg) * 100) < 10) { up = false;  return true; }
+            else if (up == true && ((leftleg - rightleg) * 100) < 10) { up = false;  return true; }
 
             else  return false;
+        }
+        public static Boolean jump_left_leg(Body body, JointType FootRight, JointType FootLeft)
+        {
+            float rightleg = -1 * body.Joints[FootRight].Position.Y;
+            float leftleg = -1 * body.Joints[FootLeft].Position.Y;
+        //    Console.Out.WriteLine("r= " + rightleg * 100 + " l= " + leftleg * 100 + " diff " + (rightleg - leftleg) * 100);
+
+            if (((rightleg - leftleg) * 100) > 20 && up == false)
+            {
+                up = true; Console.Out.WriteLine("up"); return false;
+            }
+
+            else if (up == true && ((rightleg - leftleg) * 100) < 10) { up = false; return true; }
+
+            else return false;
         }
 
       public static  float pre_z = 0;
       public static Stopwatch sw = Stopwatch.StartNew();
         
-        public static void rip(Body body, JointType ElbowLeft, JointType WristLeft, JointType WristRight)
+        public static void rip(Body body, JointType  ElbowLeft, JointType WristLeft, JointType WristRight)
         {
             
             if (body.Joints[ElbowLeft].Position.Y < body.Joints[WristLeft].Position.Y) {
@@ -386,7 +395,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                 if (sw.ElapsedMilliseconds >= 1500)
                 {
-                    EigenRequest.playMusic("3");        
+                   // EigenRequest.playMusic("3");        
                     sw.Stop();
                     sw.Reset();
                     sw.Start();
@@ -483,25 +492,37 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                //=======================================================================================//
                     //find distance from z axis
-                    if (body.Joints[JointType.WristLeft].Position.Y>body.Joints[JointType.ElbowLeft].Position.Y)
+                   // if (body.Joints[JointType.WristLeft].Position.Y>body.Joints[JointType.ElbowLeft].Position.Y)
                     {
-                        float depth_z = depth_from_chest(body, JointType.ShoulderRight, JointType.HandRight);
-                        float normalisation_factor=100* (body.Joints[JointType.WristLeft].Position.Y -body.Joints[JointType.ShoulderLeft].Position.Y);
-                        float val=depth_z/normalisation_factor;
-                        float val2 = depth_z / 20;
-                        EigenRequest.changeVolume(right_select.ToString(), val2.ToString());
-                       Console.Out.WriteLine("depth_z " + depth_z+" normal "+normalisation_factor+" val "+val);
+
+                        float depth_hand = depth_from_Hand(body, JointType.HandLeft, JointType.HandRight);
+                        
+                        EigenRequest.changeVolume(right_select.ToString(), depth_hand.ToString());
+                       Console.Out.WriteLine(" depth hand "+depth_hand);
+                       // float depth_z = depth_from_chest(body, JointType.ShoulderRight, JointType.HandRight);
+                       // float normalisation_factor=100* (body.Joints[JointType.WristLeft].Position.Y -body.Joints[JointType.ShoulderLeft].Position.Y);
+                       // float val=depth_z/normalisation_factor;
+                       // float val2 = depth_z / 20;
+                       // EigenRequest.changeVolume(right_select.ToString(), val2.ToString());
+                       //Console.Out.WriteLine("depth_z " + depth_z+" normal "+normalisation_factor+" val "+val);
+
                     }
 
                             // detect jump
-                       Boolean jump= jump_right_leg(body,JointType.FootRight,JointType.FootLeft);
+                       Boolean jumpright= jump_right_leg(body,JointType.FootRight,JointType.FootLeft);
+                       Boolean jumpleft = jump_left_leg(body, JointType.FootRight, JointType.FootLeft);
                      //  Console.Out.WriteLine(jump);
-                       if (jump)
+                       if (jumpright)
                        {
-                           Console.Out.WriteLine("jump");
-                           EigenRequest.playMusic("6");
-                       }
 
+                           Console.Out.WriteLine("jumpright");
+                           //EigenRequest.startLoop("0");   
+
+                           //Console.Out.WriteLine("jump");
+                           //EigenRequest.playMusic("6");
+
+                       }
+                       if (jumpleft) { Console.Out.WriteLine("jumpleft"); }
                             //play rip 
 
                        // Console.Out.WriteLine(angle);
