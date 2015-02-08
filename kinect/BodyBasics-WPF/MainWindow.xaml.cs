@@ -32,6 +32,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         double[] rgenArray = new double[23];
 
         private double globalVolume = 0;
+        private double globalTempo = 0;
 
         /// <summary>
         /// Thickness of drawn joint lines
@@ -572,7 +573,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                                 this.DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
                                 this.DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
-                                this.DrawBars(dc, globalVolume, globalVolume);
+                                this.DrawBars(dc, globalTempo, globalVolume);
                                 this.DrawRandombars(dc);
                             }
                         }
@@ -741,7 +742,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
             double radius = this.displayWidth / 12.0;
             centerX += radius;
-            centerY -= 2 * radius;
+            centerY -= 2.1 * radius;
             Point center = new Point(centerX, centerY);
 
             context.DrawEllipse(themeBrushLight, null, center, radius * 2, radius * 2);
@@ -806,7 +807,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             for (int i = 0; i < 23; i++)
             {
                 double startX = (i + 1) * originX + i * gap;
-                double newRand = ((rgenArray[i] * 0.8) + (rgen.NextDouble() * 0.2));
+                double newRand = ((rgenArray[i] * 0.7) + (rgen.NextDouble() * 0.3));
                 double height = newRand * totalHeight;
                 rgenArray[i] = newRand;
                 double startY = originY + totalHeight - height;
@@ -823,6 +824,19 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                     themeBrushDark,
                     null,
                     new Rect(startX, startY, width, height));
+            }
+
+            // Draw horizontal bars for breaking the bars
+            for (int i = 0; i < 5; i++)
+            {
+                double startX = 0;
+                double height = ClipBoundsThickness * 0.5;
+                double startY = this.displayHeight - (i + 1) * height - (i + 1) * gap * 3;
+
+                context.DrawRectangle(
+                    backgroundBrush,
+                    null,
+                    new Rect(startX, startY, this.displayWidth, height));
             }
         }
 
