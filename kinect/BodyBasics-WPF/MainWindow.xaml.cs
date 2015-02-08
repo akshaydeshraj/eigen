@@ -395,10 +395,11 @@ namespace Microsoft.Samples.Kinect.BodyBasics
       public static  float pre_z = 0;
       public static Stopwatch sw = Stopwatch.StartNew();
         
-        public static void rip(Body body, JointType  ElbowLeft, JointType WristLeft, JointType WristRight)
+        public static void rip(Body body, JointType  ElbowLeft, JointType WristLeft, JointType WristRight,JointType ShoulderLeft)
         {
-            
-            if (body.Joints[ElbowLeft].Position.Y < body.Joints[WristLeft].Position.Y) {
+
+            if ((body.Joints[ElbowLeft].Position.Y < body.Joints[WristLeft].Position.Y) && (body.Joints[ElbowLeft].Position.Y < body.Joints[ShoulderLeft].Position.Y))
+            {
               //  float valuerip = (body.Joints[WristRight].Position.Z) / Math.Abs(body.Joints[WristLeft].Position.Y - body.Joints[ElbowLeft].Position.Y);
               //// Console.Out.WriteLine("rip " + Math.Abs(pre_z - body.Joints[WristRight].Position.Z)*1000);
                 
@@ -519,9 +520,10 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                                 Console.Out.WriteLine(right_select.ToString());
                                 this.globalVolume = depth_hand;
+                                this.globalTempo = depth_hand_Y;
                                 EigenRequest.changeVolume(right_select.ToString(), depth_hand.ToString());
-                                EigenRequest.changeBPM(right_select.ToString(), Math.Exp
-                                    (System.Convert.ToDouble(depth_hand_Y*360)
+                                EigenRequest.changeBPM(right_select.ToString(), 
+                                    (System.Convert.ToUInt32(depth_hand_Y*360)
                                     ).ToString());
                             }
 
@@ -545,7 +547,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
                                 EigenRequest.playMusic("5");
                             }
                             //play rip 
-                            rip(body, JointType.ElbowLeft, JointType.WristLeft, JointType.WristRight);
+                            rip(body, JointType.ElbowLeft, JointType.WristLeft, JointType.WristRight, JointType.ShoulderLeft);
                             {
 
                                 // Console.Out.WriteLine(angle);
@@ -575,8 +577,8 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                                 this.DrawBody(joints, jointPoints, dc, drawPen);
 
-                                this.DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
-                                this.DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
+                                //this.DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
+                                //this.DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
                                 this.DrawBars(dc, globalTempo, globalVolume);
                                 this.DrawRandombars(dc);
                             }
@@ -622,7 +624,7 @@ namespace Microsoft.Samples.Kinect.BodyBasics
 
                 if (drawBrush != null)
                 {
-                    drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness, JointThickness);
+                    //drawingContext.DrawEllipse(drawBrush, null, jointPoints[jointType], JointThickness, JointThickness);
                 }
             }
         }
@@ -664,23 +666,23 @@ namespace Microsoft.Samples.Kinect.BodyBasics
         /// <param name="handState">state of the hand</param>
         /// <param name="handPosition">position of the hand</param>
         /// <param name="drawingContext">drawing context to draw to</param>
-        private void DrawHand(HandState handState, Point handPosition, DrawingContext drawingContext)
-        {
-            switch (handState)
-            {
-                case HandState.Closed:
-                    drawingContext.DrawEllipse(this.handClosedBrush, null, handPosition, HandSize, HandSize);
-                    break;
+        //private void DrawHand(HandState handState, Point handPosition, DrawingContext drawingContext)
+        //{
+        //    switch (handState)
+        //    {
+        //        case HandState.Closed:
+        //            drawingContext.DrawEllipse(this.handClosedBrush, null, handPosition, HandSize, HandSize);
+        //            break;
 
-                case HandState.Open:
-                    drawingContext.DrawEllipse(this.handOpenBrush, null, handPosition, HandSize, HandSize);
-                    break;
+        //        case HandState.Open:
+        //            drawingContext.DrawEllipse(this.handOpenBrush, null, handPosition, HandSize, HandSize);
+        //            break;
 
-                case HandState.Lasso:
-                    drawingContext.DrawEllipse(this.handLassoBrush, null, handPosition, HandSize, HandSize);
-                    break;
-            }
-        }
+        //        case HandState.Lasso:
+        //            drawingContext.DrawEllipse(this.handLassoBrush, null, handPosition, HandSize, HandSize);
+        //            break;
+        //    }
+        //}
 
         /// <summary>
         /// Draws indicators to show which edges are clipping body data
