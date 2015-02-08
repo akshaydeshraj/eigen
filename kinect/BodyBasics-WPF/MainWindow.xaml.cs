@@ -746,13 +746,18 @@ namespace Microsoft.Samples.Kinect.BodyBasics
             double centerX = this.displayHeight / 2.0;
             double centerY = this.displayWidth / 2.0;
 
-            double radius = this.displayWidth / 12.0;
+            double radius = this.displayWidth / 10.0;
             centerX += radius;
-            centerY -= 2.1 * radius;
+            centerY -= 2.4 * radius;
             Point center = new Point(centerX, centerY);
 
             context.DrawEllipse(themeBrushLight, null, center, radius * 2, radius * 2);
-            context.DrawEllipse(backgroundBrush, null, center, (radius * 2) - 10, (radius * 2) - 10);
+            radius -= 7;
+            context.DrawEllipse(backgroundBrush, null, center, radius * 2, radius * 2);
+            radius -= 7;
+            context.DrawEllipse(themeBrushDark, null, center, radius * 2, radius * 2);
+            radius -= 7;
+            context.DrawEllipse(backgroundBrush, null, center, radius * 2, radius * 2);
 
         }
 
